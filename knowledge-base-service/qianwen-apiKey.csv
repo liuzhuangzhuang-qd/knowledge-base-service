@@ -1,0 +1,8 @@
+﻿id,4396025
+apiKey,sk-cf53937a126741e99399a1d5bee41273
+apiHost,llm-wd861awc3iq80iom.cn-beijing.maas.aliyuncs.com
+openAiCompatible,https://llm-wd861awc3iq80iom.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+dashScope,https://llm-wd861awc3iq80iom.cn-beijing.maas.aliyuncs.com/api/v1
+description,测试服务，进行测试接入
+workspaceName,默认业务空间
+workspaceId,llm-wd861awc3iq80iom

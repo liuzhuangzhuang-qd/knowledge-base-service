@@ -1,0 +1,27 @@
+services:
+  db:
+    image: m.daocloud.io/docker.io/pgvector/pgvector:pg16
+    container_name: kb_postgres
+    environment:
+      POSTGRES_USER: kb_user
+      POSTGRES_PASSWORD: kb_pass
+      POSTGRES_DB: kb_service
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: kb_api
+    env_file:
+      - .env
+    ports:
+      - "8088:8088"
+    depends_on:
+      - db
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  pg_data:
