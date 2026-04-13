@@ -125,3 +125,5 @@
 /tool/toolbox/src/assets/vite.svg
 /ceshi/frontend/src/assets/vue.svg
 /tool/toolbox/src/assets/vue.svg
+/knowledge-base-service/
+/.gitignore/
