@@ -15,7 +15,7 @@ from src.workers.document_tasks import process_document
 router = APIRouter(tags=["documents"])
 
 
-@router.post("/knownAPI/api/kbs/upload", response_model=DocumentOut)
+@router.post("/api/kbs/upload", response_model=DocumentOut)
 def upload_document(
     kb_id: int,
     background_tasks: BackgroundTasks,
@@ -61,7 +61,7 @@ def upload_document(
     return doc
 
 
-@router.get("/knownAPI/api/kbs/documents/getList", response_model=list[DocumentOut])
+@router.get("/api/kbs/documents/getList", response_model=list[DocumentOut])
 def list_documents(
     kb_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
@@ -75,7 +75,7 @@ def list_documents(
     return db.query(Document).filter(Document.kb_id == kb_id).all()
 
 
-@router.get("/knownAPI/api/documents/get", response_model=DocumentOut)
+@router.get("/api/documents/get", response_model=DocumentOut)
 def get_document(doc_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     doc = (
         db.query(Document)
@@ -88,7 +88,7 @@ def get_document(doc_id: int, db: Session = Depends(get_db), user: User = Depend
     return doc
 
 
-@router.post("/knownAPI/api/documents/update")
+@router.post("/api/documents/update")
 def reindex_document(
     doc_id: int,
     background_tasks: BackgroundTasks,
@@ -109,7 +109,7 @@ def reindex_document(
     return {"ok": True}
 
 
-@router.delete("/knownAPI/api/documents/delete")
+@router.delete("/api/documents/delete")
 def delete_document(
     doc_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):

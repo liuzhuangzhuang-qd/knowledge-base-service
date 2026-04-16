@@ -7,7 +7,7 @@ from src.models import KnowledgeBase, User
 from src.schemas import KBCreate, KBOut, KBUpdate
 
 
-router = APIRouter(prefix="/knownAPI/api/kbs", tags=["knowledge-base"])
+router = APIRouter(prefix="/api/kbs", tags=["knowledge-base"])
 
 
 @router.post("/create", response_model=KBOut)

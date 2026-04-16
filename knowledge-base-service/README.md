@@ -17,13 +17,20 @@ FastAPI + PostgreSQL(pgvector) 的知识库后端，支持：
   - `.env` 的 `QWEN_API_KEY=你的key`
   - 或根目录 `qianwen-apiKey.csv`（服务会自动读取第一列）
 
-2) 启动：
+2) 首次构建并启动：
 
 ```bash
-docker compose up --build
+docker compose build api
+docker compose up -d
 ```
 
-3) 健康检查：
+3) 后续启动（不重复构建镜像）：
+
+```bash
+docker compose up -d
+```
+
+4) 健康检查：
 
 ```bash
 GET http://localhost:8088/health
@@ -39,31 +46,31 @@ GET http://localhost:8088/health
 
 ### 知识库
 
-- `POST /knownAPI/api/kbs/create`
-- `GET /knownAPI/api/kbs/getList`
-- `GET /knownAPI/api/kbs/get?kb_id={id}`
-- `PATCH /knownAPI/api/kbs/update?kb_id={id}`
-- `DELETE /knownAPI/api/kbs/delete?kb_id={id}`
+- `POST /api/kbs/create`
+- `GET /api/kbs/getList`
+- `GET /api/kbs/get?kb_id={id}`
+- `PATCH /api/kbs/update?kb_id={id}`
+- `DELETE /api/kbs/delete?kb_id={id}`
 
 ### 文档
 
-- `POST /knownAPI/api/kbs/upload?kb_id={id}`（multipart，MVP 支持 `.txt/.md`）
-- `GET /knownAPI/api/kbs/documents/getList?kb_id={id}`
-- `GET /knownAPI/api/documents/get?doc_id={docId}`
-- `POST /knownAPI/api/documents/update?doc_id={docId}`（重建索引）
-- `DELETE /knownAPI/api/documents/delete?doc_id={docId}`
+- `POST /api/kbs/upload?kb_id={id}`（multipart，MVP 支持 `.txt/.md`）
+- `GET /api/kbs/documents/getList?kb_id={id}`
+- `GET /api/documents/get?doc_id={docId}`
+- `POST /api/documents/update?doc_id={docId}`（重建索引）
+- `DELETE /api/documents/delete?doc_id={docId}`
 
 ### 问答
 
-- `POST /knownAPI/api/kbs/chat?kb_id={id}`
+- `POST /api/kbs/chat?kb_id={id}`
   - 入参：`question`, `session_id(可选)`
   - 返回：`answer`, `citations[]`, `usage`, `sessionId`
 
 ### 会话与反馈
 
-- `GET /knownAPI/api/sessions/getList`
-- `GET /knownAPI/api/sessions/messages/getList?session_id={id}`
-- `POST /knownAPI/api/messages/feedback/create?message_id={id}`
+- `GET /api/sessions/getList`
+- `GET /api/sessions/messages/getList?session_id={id}`
+- `POST /api/messages/feedback/create?message_id={id}`
 
 ## 3. 架构说明（当前实现）
 
@@ -149,7 +156,7 @@ src/modules/<domain>/
 
 统一前缀：
 
-- 统一使用 `/knownAPI/api/...`
+- 统一使用 `/api/...`
 
 CRUD 命名：
 
@@ -169,11 +176,11 @@ CRUD 命名：
 
 示例：
 
-- `POST /knownAPI/api/kbs/create`
-- `GET /knownAPI/api/kbs/getList`
-- `GET /knownAPI/api/kbs/get?kb_id={id}`
-- `PATCH /knownAPI/api/kbs/update?kb_id={id}`
-- `DELETE /knownAPI/api/kbs/delete?kb_id={id}`
+- `POST /api/kbs/create`
+- `GET /api/kbs/getList`
+- `GET /api/kbs/get?kb_id={id}`
+- `PATCH /api/kbs/update?kb_id={id}`
+- `DELETE /api/kbs/delete?kb_id={id}`
 
 ### 6.4 命名与代码风格
 

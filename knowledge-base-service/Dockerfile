@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 FROM mcr.microsoft.com/devcontainers/python:1-3.11-bookworm
 
 WORKDIR /app
@@ -12,8 +13,9 @@ ENV PIP_DEFAULT_TIMEOUT=120
 ENV PIP_RETRIES=5
 
 COPY requirements.txt .
-RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt
 
 COPY . .
 

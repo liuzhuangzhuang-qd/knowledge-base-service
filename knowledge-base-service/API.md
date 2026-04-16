@@ -36,7 +36,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 2.1 创建知识库
 
-- **POST** `/knownAPI/api/kbs/create`
+- **POST** `/api/kbs/create`
 
 请求体：
 
@@ -60,17 +60,17 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 2.2 查询知识库列表
 
-- **GET** `/knownAPI/api/kbs/getList`
+- **GET** `/api/kbs/getList`
 
 响应：`KBOut[]`
 
 ### 2.3 查询知识库详情
 
-- **GET** `/knownAPI/api/kbs/get?kb_id={id}`
+- **GET** `/api/kbs/get?kb_id={id}`
 
 ### 2.4 更新知识库
 
-- **PATCH** `/knownAPI/api/kbs/update?kb_id={id}`
+- **PATCH** `/api/kbs/update?kb_id={id}`
 
 请求体（可部分更新）：
 
@@ -83,7 +83,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 2.5 删除知识库
 
-- **DELETE** `/knownAPI/api/kbs/delete?kb_id={id}`
+- **DELETE** `/api/kbs/delete?kb_id={id}`
 
 响应：
 
@@ -101,7 +101,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 3.1 上传文档
 
-- **POST** `/knownAPI/api/kbs/upload?kb_id={id}`
+- **POST** `/api/kbs/upload?kb_id={id}`
 - `Content-Type: multipart/form-data`
 - 字段：`file`
 
@@ -124,15 +124,15 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 3.2 查询知识库文档列表
 
-- **GET** `/knownAPI/api/kbs/documents/getList?kb_id={id}`
+- **GET** `/api/kbs/documents/getList?kb_id={id}`
 
 ### 3.3 查询文档详情
 
-- **GET** `/knownAPI/api/documents/get?doc_id={docId}`
+- **GET** `/api/documents/get?doc_id={docId}`
 
 ### 3.4 重建索引
 
-- **POST** `/knownAPI/api/documents/update?doc_id={docId}`
+- **POST** `/api/documents/update?doc_id={docId}`
 
 响应：
 
@@ -144,7 +144,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 3.5 删除文档
 
-- **DELETE** `/knownAPI/api/documents/delete?doc_id={docId}`
+- **DELETE** `/api/documents/delete?doc_id={docId}`
 
 响应：
 
@@ -160,7 +160,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 4.1 发起问答
 
-- **POST** `/knownAPI/api/kbs/chat?kb_id={id}`
+- **POST** `/api/kbs/chat?kb_id={id}`
 
 请求体：
 
@@ -200,15 +200,15 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 5.1 查询会话列表
 
-- **GET** `/knownAPI/api/sessions/getList`
+- **GET** `/api/sessions/getList`
 
 ### 5.2 查询会话消息
 
-- **GET** `/knownAPI/api/sessions/messages/getList?session_id={id}`
+- **GET** `/api/sessions/messages/getList?session_id={id}`
 
 ### 5.3 点赞/点踩
 
-- **POST** `/knownAPI/api/messages/feedback/create?message_id={id}`
+- **POST** `/api/messages/feedback/create?message_id={id}`
 
 请求体：
 

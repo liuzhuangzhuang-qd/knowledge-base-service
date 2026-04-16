@@ -30,10 +30,16 @@
 
 ## 3. 本地运行（Windows/macOS/Linux）
 
-在项目根目录执行：
+首次构建（首次部署或依赖变化时）：
 
 ```bash
-docker compose up --build
+docker compose build api
+```
+
+日常启动（不重建镜像）：
+
+```bash
+docker compose up -d
 ```
 
 后台运行：
@@ -104,6 +110,25 @@ cd knowledge-base-service
 - 如需暴露外网，确认端口策略（默认 8088）
 
 ### 4.3 启动
+
+首次在服务器构建镜像：
+
+```bash
+docker compose build api
+docker compose up -d
+```
+
+后续重启服务（推荐，不重复安装依赖）：
+
+```bash
+docker compose up -d
+```
+
+仅在以下场景才需要重新 build：
+
+- 修改了 `requirements.txt`
+- 修改了 `Dockerfile`
+- 需要主动升级基础镜像或依赖
 
 ```bash
 docker compose up -d --build
