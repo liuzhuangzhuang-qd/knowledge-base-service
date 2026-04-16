@@ -38,8 +38,10 @@ def upload_document(
         raise HTTPException(status_code=400, detail="File too large")
 
     ext = os.path.splitext(file.filename or "")[1].lower()
-    if ext not in {".txt", ".md"}:
-        raise HTTPException(status_code=400, detail="Only .txt and .md are allowed in MVP")
+    if ext not in {".txt", ".md", ".docx"}:
+        raise HTTPException(
+            status_code=400, detail="Only .txt, .md and .docx are allowed in MVP"
+        )
 
     os.makedirs(settings.upload_dir, exist_ok=True)
     file_path = os.path.join(settings.upload_dir, f"{uuid.uuid4()}{ext}")

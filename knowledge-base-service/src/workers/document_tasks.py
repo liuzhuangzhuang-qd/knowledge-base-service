@@ -1,9 +1,51 @@
+import os
+
+from docx import Document as DocxDocument
 from sqlalchemy.orm import Session
 
 from src.core.db import SessionLocal
 from src.models import ChunkEmbedding, Document, DocumentChunk
 from src.services.chunking import split_text
 from src.services.qwen_client import embed_texts
+
+
+def _normalize_text(text: str) -> str:
+    """
+    Normalize extracted document text for chunking/retrieval quality.
+    """
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    cleaned_lines: list[str] = []
+    prev_blank = False
+
+    for line in lines:
+        normalized = " ".join(line.strip().split())
+        if not normalized:
+            if not prev_blank:
+                cleaned_lines.append("")
+            prev_blank = True
+            continue
+        prev_blank = False
+        cleaned_lines.append(normalized)
+
+    return "\n".join(cleaned_lines).strip()
+
+
+def _load_raw_text(file_path: str) -> str:
+    ext = os.path.splitext(file_path)[1].lower()
+    if ext in {".txt", ".md"}:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            return f.read()
+    if ext == ".docx":
+        doc = DocxDocument(file_path)
+        paragraph_lines = [p.text.strip() for p in doc.paragraphs if p.text and p.text.strip()]
+        table_lines: list[str] = []
+        for table in doc.tables:
+            for row in table.rows:
+                cells = [cell.text.strip() for cell in row.cells if cell.text and cell.text.strip()]
+                if cells:
+                    table_lines.append(" | ".join(cells))
+        return "\n".join(paragraph_lines + table_lines)
+    raise ValueError(f"Unsupported file extension: {ext}")
 
 
 def process_document(doc_id: int) -> None:
@@ -16,12 +58,21 @@ def process_document(doc_id: int) -> None:
         document.status = "parsing"
         db.commit()
 
-        with open(document.file_path, "r", encoding="utf-8", errors="ignore") as f:
-            raw_text = f.read()
+        raw_text = _load_raw_text(document.file_path)
+
+        raw_length = len(raw_text)
+        normalized_text = _normalize_text(raw_text)
+        normalized_length = len(normalized_text)
+        dropped_ratio = 0.0
+        if raw_length > 0:
+            dropped_ratio = round((raw_length - normalized_length) / raw_length, 4)
+
+        if not normalized_text:
+            raise ValueError("Document contains no extractable text")
 
         document.status = "chunking"
         db.commit()
-        chunks = split_text(raw_text)
+        chunks = split_text(normalized_text)
 
         db.query(ChunkEmbedding).filter(
             ChunkEmbedding.chunk_id.in_(
@@ -50,6 +101,9 @@ def process_document(doc_id: int) -> None:
         document.status = "ready"
         document.metadata_json = {
             "chunk_count": len(created_chunks),
+            "raw_length": raw_length,
+            "normalized_length": normalized_length,
+            "dropped_ratio": dropped_ratio,
         }
         db.commit()
     except Exception as exc:

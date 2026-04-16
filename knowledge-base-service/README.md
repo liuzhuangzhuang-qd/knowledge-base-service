@@ -54,7 +54,7 @@ GET http://localhost:8088/health
 
 ### 文档
 
-- `POST /api/kbs/upload?kb_id={id}`（multipart，MVP 支持 `.txt/.md`）
+- `POST /api/kbs/upload?kb_id={id}`（multipart，MVP 支持 `.txt/.md/.docx`）
 - `GET /api/kbs/documents/getList?kb_id={id}`
 - `GET /api/documents/get?doc_id={docId}`
 - `POST /api/documents/update?doc_id={docId}`（重建索引）

@@ -97,7 +97,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ## 3. 文档
 
-> MVP 仅支持 `.txt` / `.md`
+> MVP 支持 `.txt` / `.md` / `.docx`
 
 ### 3.1 上传文档
 
