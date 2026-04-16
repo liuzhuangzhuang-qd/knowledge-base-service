@@ -7,10 +7,10 @@ from src.models import KnowledgeBase, User
 from src.schemas import KBCreate, KBOut, KBUpdate
 
 
-router = APIRouter(prefix="/api/kbs", tags=["knowledge-base"])
+router = APIRouter(prefix="/knownAPI/api/kbs", tags=["knowledge-base"])
 
 
-@router.post("", response_model=KBOut)
+@router.post("/create", response_model=KBOut)
 def create_kb(
     payload: KBCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
@@ -21,12 +21,12 @@ def create_kb(
     return kb
 
 
-@router.get("", response_model=list[KBOut])
+@router.get("/getList", response_model=list[KBOut])
 def list_kbs(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     return db.query(KnowledgeBase).filter(KnowledgeBase.owner_id == user.id).all()
 
 
-@router.get("/{kb_id}", response_model=KBOut)
+@router.get("/get", response_model=KBOut)
 def get_kb(kb_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     kb = (
         db.query(KnowledgeBase)
@@ -38,7 +38,7 @@ def get_kb(kb_id: int, db: Session = Depends(get_db), user: User = Depends(get_c
     return kb
 
 
-@router.patch("/{kb_id}", response_model=KBOut)
+@router.patch("/update", response_model=KBOut)
 def update_kb(
     kb_id: int,
     payload: KBUpdate,
@@ -61,7 +61,7 @@ def update_kb(
     return kb
 
 
-@router.delete("/{kb_id}")
+@router.delete("/delete")
 def delete_kb(
     kb_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):

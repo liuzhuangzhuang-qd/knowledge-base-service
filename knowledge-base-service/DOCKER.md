@@ -42,6 +42,16 @@ docker compose up --build
 docker compose up -d --build
 ```
 
+若依赖安装较慢或偶发超时，可指定 pip 源构建（Dockerfile 已支持）：
+
+```bash
+docker compose build \
+  --build-arg PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ \
+  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.org/simple \
+  api
+docker compose up -d
+```
+
 查看状态：
 
 ```bash
@@ -97,6 +107,16 @@ cd knowledge-base-service
 
 ```bash
 docker compose up -d --build
+```
+
+若服务器网络对默认源不稳定，可先单独构建并传入 pip 源参数：
+
+```bash
+docker compose build \
+  --build-arg PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ \
+  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.org/simple \
+  api
+docker compose up -d
 ```
 
 ### 4.4 防火墙与安全组

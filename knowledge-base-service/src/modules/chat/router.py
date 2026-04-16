@@ -18,7 +18,7 @@ from src.services.retrieval import hybrid_retrieve
 router = APIRouter(tags=["chat"])
 
 
-@router.post("/api/kbs/{kb_id}/chat", response_model=ChatResponse)
+@router.post("/knownAPI/api/kbs/chat", response_model=ChatResponse)
 def chat(
     kb_id: int,
     payload: ChatRequest,

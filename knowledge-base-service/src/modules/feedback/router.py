@@ -10,7 +10,7 @@ from src.schemas import FeedbackIn, MessageOut, SessionOut
 router = APIRouter(tags=["sessions-feedback"])
 
 
-@router.get("/api/sessions", response_model=list[SessionOut])
+@router.get("/knownAPI/api/sessions/getList", response_model=list[SessionOut])
 def list_sessions(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     return (
         db.query(ChatSession)
@@ -20,7 +20,7 @@ def list_sessions(db: Session = Depends(get_db), user: User = Depends(get_curren
     )
 
 
-@router.get("/api/sessions/{session_id}/messages", response_model=list[MessageOut])
+@router.get("/knownAPI/api/sessions/messages/getList", response_model=list[MessageOut])
 def list_messages(
     session_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
@@ -39,7 +39,7 @@ def list_messages(
     )
 
 
-@router.post("/api/messages/{message_id}/feedback")
+@router.post("/knownAPI/api/messages/feedback/create")
 def create_feedback(
     message_id: int,
     payload: FeedbackIn,

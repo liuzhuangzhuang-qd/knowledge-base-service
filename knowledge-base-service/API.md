@@ -36,7 +36,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 2.1 创建知识库
 
-- **POST** `/api/kbs`
+- **POST** `/knownAPI/api/kbs/create`
 
 请求体：
 
@@ -60,17 +60,17 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 2.2 查询知识库列表
 
-- **GET** `/api/kbs`
+- **GET** `/knownAPI/api/kbs/getList`
 
 响应：`KBOut[]`
 
 ### 2.3 查询知识库详情
 
-- **GET** `/api/kbs/{id}`
+- **GET** `/knownAPI/api/kbs/get?kb_id={id}`
 
 ### 2.4 更新知识库
 
-- **PATCH** `/api/kbs/{id}`
+- **PATCH** `/knownAPI/api/kbs/update?kb_id={id}`
 
 请求体（可部分更新）：
 
@@ -83,7 +83,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 2.5 删除知识库
 
-- **DELETE** `/api/kbs/{id}`
+- **DELETE** `/knownAPI/api/kbs/delete?kb_id={id}`
 
 响应：
 
@@ -101,7 +101,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 3.1 上传文档
 
-- **POST** `/api/kbs/{id}/documents`
+- **POST** `/knownAPI/api/kbs/upload?kb_id={id}`
 - `Content-Type: multipart/form-data`
 - 字段：`file`
 
@@ -124,15 +124,15 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 3.2 查询知识库文档列表
 
-- **GET** `/api/kbs/{id}/documents`
+- **GET** `/knownAPI/api/kbs/documents/getList?kb_id={id}`
 
 ### 3.3 查询文档详情
 
-- **GET** `/api/documents/{docId}`
+- **GET** `/knownAPI/api/documents/get?doc_id={docId}`
 
 ### 3.4 重建索引
 
-- **POST** `/api/documents/{docId}/reindex`
+- **POST** `/knownAPI/api/documents/update?doc_id={docId}`
 
 响应：
 
@@ -144,7 +144,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 3.5 删除文档
 
-- **DELETE** `/api/documents/{docId}`
+- **DELETE** `/knownAPI/api/documents/delete?doc_id={docId}`
 
 响应：
 
@@ -160,7 +160,7 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 4.1 发起问答
 
-- **POST** `/api/kbs/{id}/chat`
+- **POST** `/knownAPI/api/kbs/chat?kb_id={id}`
 
 请求体：
 
@@ -200,15 +200,15 @@ Base URL（本地）: `http://localhost:8088`
 
 ### 5.1 查询会话列表
 
-- **GET** `/api/sessions`
+- **GET** `/knownAPI/api/sessions/getList`
 
 ### 5.2 查询会话消息
 
-- **GET** `/api/sessions/{id}/messages`
+- **GET** `/knownAPI/api/sessions/messages/getList?session_id={id}`
 
 ### 5.3 点赞/点踩
 
-- **POST** `/api/messages/{id}/feedback`
+- **POST** `/knownAPI/api/messages/feedback/create?message_id={id}`
 
 请求体：
 
