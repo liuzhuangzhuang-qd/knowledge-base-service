@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1.7
-FROM mcr.microsoft.com/devcontainers/python:1-3.11-bookworm
+FROM m.daocloud.io/docker.io/library/python:3.11-slim-bookworm
 
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ARG PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
-ARG PIP_EXTRA_INDEX_URL=https://pypi.org/simple
+ARG PIP_EXTRA_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple/
 ENV PIP_INDEX_URL=${PIP_INDEX_URL}
 ENV PIP_EXTRA_INDEX_URL=${PIP_EXTRA_INDEX_URL}
 ENV PIP_DEFAULT_TIMEOUT=120

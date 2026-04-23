@@ -11,6 +11,10 @@
 - 机器可访问千问 API（若要使用问答）
 
 > 若你的 Docker 默认镜像源对 `docker.io` 返回 403（常见于部分镜像加速配置），本项目已在 `docker-compose.yml` 中为数据库使用可访问镜像地址。
+>
+> 阿里云服务器建议优先使用国内资源。本项目 `Dockerfile` 已默认使用国内可访问的 Python 基础镜像，并配置阿里云 + 清华 pip 源，通常无需额外传参。
+>
+> 若构建阶段仍出现 `Temporary failure in name resolution`，本项目已在 `docker-compose.yml` 中为 `api` 构建启用宿主机网络，并为运行时容器显式指定国内 DNS。
 
 ---
 
@@ -48,12 +52,12 @@ docker compose up -d
 docker compose up -d --build
 ```
 
-若依赖安装较慢或偶发超时，可指定 pip 源构建（Dockerfile 已支持）：
+若依赖安装较慢或偶发超时，可显式指定国内 pip 源构建：
 
 ```bash
 docker compose build \
   --build-arg PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ \
-  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.org/simple \
+  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple/ \
   api
 docker compose up -d
 ```
@@ -118,6 +122,21 @@ docker compose build api
 docker compose up -d
 ```
 
+阿里云服务器推荐构建命令：
+
+```bash
+docker compose build \
+  --build-arg PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ \
+  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple/ \
+  api
+docker compose up -d
+```
+
+说明：
+
+- API 基础镜像已默认切换为国内可访问地址：`m.daocloud.io/docker.io/library/python:3.11-slim-bookworm`
+- 相比原先 devcontainer 镜像更轻量，首次拉取更快，更适合服务器部署
+
 后续重启服务（推荐，不重复安装依赖）：
 
 ```bash
@@ -134,12 +153,12 @@ docker compose up -d
 docker compose up -d --build
 ```
 
-若服务器网络对默认源不稳定，可先单独构建并传入 pip 源参数：
+若服务器网络仍不稳定，可先单独构建并再次显式传入国内 pip 源参数：
 
 ```bash
 docker compose build \
   --build-arg PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ \
-  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.org/simple \
+  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple/ \
   api
 docker compose up -d
 ```
@@ -227,6 +246,33 @@ docker compose exec api /bin/bash
 - 检查文档是否 `ready`
 - 检查 `QWEN_API_KEY` 是否有效
 - 检查模型名是否可用
+
+### 7.4 构建时报 DNS 解析失败
+
+典型报错：
+
+```text
+Temporary failure in name resolution
+```
+
+处理建议：
+
+- 本项目已默认启用：
+  - `build.network: host`
+  - `dns: 223.5.5.5 / 223.6.6.6 / 114.114.114.114`
+- 重新构建：
+
+```bash
+docker compose build --no-cache api
+docker compose up -d
+```
+
+- 若仍失败，优先检查宿主机 DNS：
+
+```bash
+ping mirrors.aliyun.com
+nslookup pypi.tuna.tsinghua.edu.cn
+```
 
 ---
 

@@ -12,10 +12,16 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   api:
-    build: .
+    build:
+      context: .
+      network: host
     container_name: kb_api
     env_file:
       - .env
+    dns:
+      - 223.5.5.5
+      - 223.6.6.6
+      - 114.114.114.114
     ports:
       - "8088:8088"
     depends_on:

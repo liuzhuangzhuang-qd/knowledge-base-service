@@ -24,6 +24,23 @@ docker compose build api
 docker compose up -d
 ```
 
+阿里云服务器推荐：
+
+```bash
+docker compose build \
+  --build-arg PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ \
+  --build-arg PIP_EXTRA_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple/ \
+  api
+docker compose up -d
+```
+
+说明：
+
+- 默认 Python 基础镜像已切换为国内可访问镜像源
+- 默认 pip 依赖源优先走阿里云与清华源
+- `docker-compose.yml` 已为 `api` 构建启用宿主机网络，并配置国内 DNS
+- 更适合阿里云服务器首次构建与后续重建
+
 3) 后续启动（不重复构建镜像）：
 
 ```bash
