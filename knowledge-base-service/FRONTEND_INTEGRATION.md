@@ -27,7 +27,29 @@
 
 ## 3. 鉴权与全局请求封装
 
-## 3.1 登录
+## 3.1 注册
+
+- 方法：`POST`
+- 路径：`/api/auth/register`
+
+请求体：
+
+```json
+{
+  "username": "alice",
+  "password": "your-password"
+}
+```
+
+响应：
+
+```json
+{
+  "ok": true
+}
+```
+
+## 3.2 登录
 
 - 方法：`POST`
 - 路径：`/api/auth/login`
@@ -36,7 +58,8 @@
 
 ```json
 {
-  "username": "alice"
+  "username": "alice",
+  "password": "your-password"
 }
 ```
 
@@ -314,13 +337,14 @@ export async function uploadDoc(kbId: number, file: File) {
 
 ## 8. 推荐调用时序（前端最小闭环）
 
-1. 登录拿 token
-2. 创建知识库（或进入已有知识库）
-3. 上传文档
-4. 轮询文档列表，直到状态为 `ready`
-5. 发起问答
-6. 拉取会话消息与历史
-7. 对回答进行点赞/点踩
+1. 注册账号
+2. 登录拿 token
+3. 创建知识库（或进入已有知识库）
+4. 上传文档
+5. 轮询文档列表，直到状态为 `ready`
+6. 发起问答
+7. 拉取会话消息与历史
+8. 对回答进行点赞/点踩
 
 ---
 

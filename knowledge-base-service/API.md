@@ -8,16 +8,39 @@ Base URL（本地）: `http://localhost:8088`
 
 ## 1. 认证
 
-### 1.1 登录（简化）
+### 1.1 注册
 
-- **POST** `/api/auth/login`
-- **说明**：若用户不存在会自动创建，返回 token
+- **POST** `/api/auth/register`
+- **说明**：创建新用户，用户名不可重复
 
 请求体：
 
 ```json
 {
-  "username": "alice"
+  "username": "alice",
+  "password": "your-password"
+}
+```
+
+响应：
+
+```json
+{
+  "ok": true
+}
+```
+
+### 1.2 登录
+
+- **POST** `/api/auth/login`
+- **说明**：按用户名 + 密码校验，成功后返回 token
+
+请求体：
+
+```json
+{
+  "username": "alice",
+  "password": "your-password"
 }
 ```
 
@@ -61,6 +84,7 @@ Base URL（本地）: `http://localhost:8088`
 ### 2.2 查询知识库列表
 
 - **GET** `/api/kbs/getList`
+- **鉴权**：无需登录（可匿名访问）
 
 响应：`KBOut[]`
 
@@ -161,6 +185,7 @@ Base URL（本地）: `http://localhost:8088`
 ### 4.1 发起问答
 
 - **POST** `/api/kbs/chat?kb_id={id}`
+- **鉴权**：无需登录（可匿名访问）
 
 请求体：
 
@@ -250,9 +275,10 @@ Base URL（本地）: `http://localhost:8088`
 
 ## 7. 调用顺序建议（最小闭环）
 
-1. 登录拿 token  
-2. 创建知识库  
-3. 上传文档  
-4. 轮询文档状态到 `ready`  
-5. 调用 chat  
-6. 查看会话消息并提交反馈
+1. 注册账号  
+2. 登录拿 token  
+3. 创建知识库  
+4. 上传文档  
+5. 轮询文档状态到 `ready`  
+6. 调用 chat  
+7. 查看会话消息并提交反馈

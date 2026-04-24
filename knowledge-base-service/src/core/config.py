@@ -26,16 +26,46 @@ class Settings(BaseSettings):
     retrieval_keyword_topk: int = 10
     rerank_keep_topk: int = 5
 
+    def _read_qwen_csv_kv(self) -> dict[str, str]:
+        candidate_files = [
+            Path("qianwen-apiKey.csv"),
+            Path("/app/qianwen-apiKey.csv"),
+            Path(__file__).resolve().parents[2] / "qianwen-apiKey.csv",
+        ]
+
+        kv: dict[str, str] = {}
+        for key_file in candidate_files:
+            if not key_file.exists():
+                continue
+            for line in key_file.read_text(encoding="utf-8").splitlines():
+                if not line.strip() or "," not in line:
+                    continue
+                key, value = line.split(",", 1)
+                k = key.strip()
+                v = value.strip()
+                if k and v:
+                    kv[k] = v
+            if kv:
+                break
+        return kv
+
     def resolve_qwen_api_key(self) -> str:
         if self.qwen_api_key.strip():
             return self.qwen_api_key.strip()
 
-        key_file = Path("qianwen-apiKey.csv")
-        if key_file.exists():
-            content = key_file.read_text(encoding="utf-8").strip()
-            if content:
-                return content.split(",")[0].strip()
+        kv = self._read_qwen_csv_kv()
+        if kv.get("apiKey"):
+            return kv["apiKey"]
         return ""
+
+    def resolve_qwen_base_url(self) -> str:
+        kv = self._read_qwen_csv_kv()
+        if (
+            kv.get("openAiCompatible")
+            and self.qwen_base_url.strip() == "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        ):
+            return kv["openAiCompatible"]
+        return self.qwen_base_url
 
 
 settings = Settings()

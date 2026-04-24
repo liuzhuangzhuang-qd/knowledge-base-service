@@ -28,6 +28,7 @@ services:
       - db
     volumes:
       - ./data:/app/data
+      - ./qianwen-apiKey.csv:/app/qianwen-apiKey.csv:ro
 
 volumes:
   pg_data:

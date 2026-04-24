@@ -2,13 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.core.db import get_db
-from src.core.security import get_current_user
 from src.models import (
     AnswerCitation,
     ChatMessage,
     ChatSession,
     KnowledgeBase,
-    User,
 )
 from src.schemas import ChatRequest, ChatResponse, CitationOut
 from src.services.qwen_client import chat_with_context, embed_texts
@@ -23,13 +21,8 @@ def chat(
     kb_id: int,
     payload: ChatRequest,
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user),
 ):
-    kb = (
-        db.query(KnowledgeBase)
-        .filter(KnowledgeBase.id == kb_id, KnowledgeBase.owner_id == user.id)
-        .first()
-    )
+    kb = db.query(KnowledgeBase).filter(KnowledgeBase.id == kb_id).first()
     if not kb:
         raise HTTPException(status_code=404, detail="KB not found")
 
@@ -39,13 +32,12 @@ def chat(
             db.query(ChatSession)
             .filter(
                 ChatSession.id == payload.session_id,
-                ChatSession.user_id == user.id,
                 ChatSession.kb_id == kb_id,
             )
             .first()
         )
     if not session:
-        session = ChatSession(kb_id=kb_id, user_id=user.id, title=payload.question[:30])
+        session = ChatSession(kb_id=kb_id, user_id=kb.owner_id, title=payload.question[:30])
         db.add(session)
         db.commit()
         db.refresh(session)
@@ -54,15 +46,28 @@ def chat(
     db.add(user_msg)
     db.commit()
 
-    query_vec = embed_texts([payload.question])[0]
-    retrieved = hybrid_retrieve(db, kb_id, payload.question, query_vec)
-    contexts = [item["chunk_content"] for item in retrieved]
+    try:
+        query_vec = embed_texts([payload.question])[0]
+        retrieved = hybrid_retrieve(db, kb_id, payload.question, query_vec)
+        contexts = [item["chunk_content"] for item in retrieved]
 
-    if not contexts:
-        answer_text = "未检索到可靠依据。"
-        usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
-    else:
-        answer_text, usage = chat_with_context(payload.question, contexts)
+        if not contexts:
+            answer_text = "未检索到可靠依据。"
+            usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        else:
+            answer_text, usage = chat_with_context(payload.question, contexts)
+    except RuntimeError as exc:
+        if "QWEN_API_KEY is empty" in str(exc):
+            raise HTTPException(
+                status_code=503,
+                detail="Qwen service is not configured. Please set QWEN_API_KEY.",
+            ) from exc
+        if "Qwen connection failed" in str(exc):
+            raise HTTPException(
+                status_code=503,
+                detail="Qwen service connection failed. Please check endpoint/network settings.",
+            ) from exc
+        raise
 
     assistant_msg = ChatMessage(
         session_id=session.id, role="assistant", content=answer_text, usage_json=usage

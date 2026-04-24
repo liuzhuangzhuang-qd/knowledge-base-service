@@ -22,8 +22,8 @@ def create_kb(
 
 
 @router.get("/getList", response_model=list[KBOut])
-def list_kbs(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    return db.query(KnowledgeBase).filter(KnowledgeBase.owner_id == user.id).all()
+def list_kbs(db: Session = Depends(get_db)):
+    return db.query(KnowledgeBase).all()
 
 
 @router.get("/get", response_model=KBOut)

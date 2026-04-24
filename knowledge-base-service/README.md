@@ -57,8 +57,12 @@ GET http://localhost:8088/health
 
 ### 鉴权
 
+- `POST /api/auth/register`  
+  body: `{ "username": "alice", "password": "your-password" }`  
+  创建账号
+
 - `POST /api/auth/login`  
-  body: `{ "username": "alice" }`  
+  body: `{ "username": "alice", "password": "your-password" }`  
   返回 bearer token
 
 ### 知识库

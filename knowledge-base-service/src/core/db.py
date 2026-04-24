@@ -22,4 +22,5 @@ def init_db() -> None:
 
     with engine.begin() as conn:
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255)"))
     Base.metadata.create_all(bind=engine)
